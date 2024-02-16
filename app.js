@@ -56,7 +56,26 @@ app.get('/vuelos-all', function (req, res) {
         }
     });
 });
+**
+ * Maneja las solicitudes GET para mostrar los detalles de un vuelo específico.
+ * @param {Object} req - Objeto de solicitud (request).
+ * @param {Object} res - Objeto de respuesta (response).
+ */
+app.get('/vuelos/show/:id', function (req, res) {
+    // Directorio del archivo HTML que contiene los detalles del vuelo
+    let dir = __dirname + '/public/templates/vuelos/show.html';
 
+    // Envía el archivo HTML al cliente
+    res.sendFile(dir, (err) => {
+        if (err) {
+            // Si hay un error al enviar el archivo, establece el estado de la respuesta en el estado del error
+            res.status(err.status);
+        } else {
+            // Si se envía el archivo correctamente, imprime un mensaje en la consola
+            console.log('Encontrado correctamente');
+        }
+    });
+});
 /**
  * Obtiene un vuelo específico por su ID.
  * @param {string} req.params.id - ID del vuelo a buscar.
