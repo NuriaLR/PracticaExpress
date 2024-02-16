@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=+, initial-scale=1.0">
+    <title>EDITAR</title>
+    <!-- Se incluye la biblioteca Axios para hacer solicitudes HTTP -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Se incluye la hoja de estilos de Bootstrap -->
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <!-- La ruta a node_modules parece incorrecta, revisar -->
+    <!-- Se incluye la hoja de estilos de Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <h1>Vuelos EDIT</h1>
+    <main class="flex-container">
+        <div id="main" class="row">
+            <!-- Formulario para editar los detalles del vuelo -->
+            <form action="" method="">
+                <!-- Inputs para editar los detalles del vuelo -->
+                <input name="numero_vuelo" class="form-control form-control-lg" type="text" aria-label=".form-control-lg example">
+                <input name="aerolinea" class="form-control form-control-lg" type="text" aria-label=".form-control-lg example">
+                <input name="origen" class="form-control form-control-lg" type="text" aria-label=".form-control-lg example">
+                <input name="destino" class="form-control form-control-lg" type="text" aria-label=".form-control-lg example">
+                <input name="fecha_salida" class="form-control form-control-lg" type="text" aria-label=".form-control-lg example">
+                <input name="hora_salida" class="form-control form-control-lg" type="text" aria-label=".form-control-lg example">
+                <input name="fecha_llegada" class="form-control form-control-lg" type="text" aria-label=".form-control-lg example">
+                <input name="hora_llegada" class="form-control form-control-lg" type="text" aria-label=".form-control-lg example">
+                <!-- Botón para actualizar los detalles del vuelo -->
+                <button type="button" onclick="update()" class="btn btn-secondary">Actualizar</button>
+            </form>
+            <!-- Enlace para volver atrás -->
+            <a href="/vuelos/index" class="btn btn-secondary">Atras</a>
+        </div>
+    </main>
+</body>
+
+<script>
+    // Selecciona los elementos del formulario
+    let elementos_formulario = document.forms[0].elements;
+
+    // Obtiene el ID del vuelo de la URL
+    let path = window.location.pathname.split("/");
+    let id = path[path.length-1];
+
+    // Realiza una solicitud para obtener los detalles del vuelo con el ID dado
+    fetch(`/vuelos-show/${id}`)
+    .then((response) => response.json())
+    .then((vuelos) => {
+        // Rellena los campos del formulario con los detalles del vuelo obtenidos
+        elementos_formulario.numero_vuelo.value = vuelos[0].numero_vuelo;
+        elementos_formulario.aerolinea.value = vuelos[0].aerolinea;
+        elementos_formulario.origen.value = vuelos[0].origen;
+        elementos_formulario.destino.value = vuelos[0].destino;
+        elementos_formulario.fecha_llegada.value = new Date(vuelos[0].fecha_llegada).toISOString().substring(0, 10);
+        elementos_formulario.hora_llegada.value = vuelos[0].hora_llegada;
+        elementos_formulario.fecha_salida.value = new Date(vuelos[0].fecha_salida).toISOString().substring(0, 10);
+        elementos_formulario.hora_salida.value = vuelos[0].hora_salida;
+    });
+
+    // Función para actualizar los detalles del vuelo
+    function update() {
+        // Construye el objeto de vuelo con los datos del formulario
+        let vuelo = {
+            numero_vuelo: elementos_formulario.numero_vuelo.value,
+            aerolinea: elementos_formulario.aerolinea.value,
+            destino: elementos_formulario.destino.value,
+            origen: elementos_formulario.origen.value,
+            fecha_llegada: elementos_formulario.fecha_llegada.value,
+            hora_llegada: elementos_formulario.hora_llegada.value,
+            fecha_salida: elementos_formulario.fecha_salida.value,
+            hora_salida: elementos_formulario.hora_salida.value
+        };
+
+        // Realiza una solicitud para actualizar los detalles del vuelo
+        fetch(`/vuelo-actualizar/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(vuelo)
+        })
+        .then(response => response.json())
+        .then(respuesta => {
+            console.log(respuesta.estado);
+            // Redirige a la página de índice de vuelos si la actualización fue exitosa
+            if (respuesta.estado === true) {
+                window.location.href = "/vuelos/index";
+            } else {
+                // Maneja el caso en el que la actualización no fue exitosa
+                console.error("Error en la actualización:", respuesta.mensaje);
+            }
+        });
+    }
+</script>
+</html>

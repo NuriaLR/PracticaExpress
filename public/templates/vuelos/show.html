@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=+, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Se importa la biblioteca Axios para hacer solicitudes HTTP -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Se importa la hoja de estilos de Bootstrap -->
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Se importa la hoja de estilos de Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <h1>VUELOS</h1>
+    <main class="flex-container">
+        <div id="main" class="row">
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img src="..." class="img-fluid rounded-start" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <!-- Se muestran los detalles del vuelo dentro de la tarjeta -->
+                      <h5 class="card-title" id="numero_vuelo"></h5>
+                      <p class="card-text" id="aerolinea"></p>
+                      <p class="card-text" id="destino"></p>
+                      <p class="card-text" id="origen"></p>
+                      <p class="card-text" id="fecha_llegada"></p>
+                      <p class="card-text" id="fecha_salida"></p>
+                      <p class="card-text" id="hora_llegada"></p>
+                      <p class="card-text" id="hora_salida"></p>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <!-- Botón para volver atrás -->
+            <a href="/vuelos/index" class="btn btn-secondary">Atras</a>
+        </div>
+    </main>
+<script>
+    // Se obtiene el ID del vuelo de la URL
+    let path = window.location.pathname.split("/");
+    let id = path[path.length-1];
+
+    // Se hace una solicitud para obtener los detalles del vuelo con el ID dado
+    fetch(`/vuelos-show/${id}`)
+    .then((response) => response.json())
+    .then((vuelos) => {
+        vuelos.forEach((vuelo) => {
+            // Se actualizan los elementos HTML con los detalles del vuelo
+            document.getElementById('numero_vuelo').textContent = `Número de Vuelo: ${vuelo.numero_vuelo}`;
+            document.getElementById('aerolinea').textContent = `Aerolinea: ${vuelo.aerolinea}`;
+            document.getElementById('destino').textContent = `Destino: ${vuelo.destino}`;
+            document.getElementById('origen').textContent = `Origen: ${vuelo.origen}`;
+            document.getElementById('fecha_llegada').textContent = `Fecha llegada día: ${vuelo.fecha_llegada} a las: ${vuelo.hora_llegada}`;
+            document.getElementById('fecha_salida').textContent = `Fecha salida día: ${vuelo.fecha_salida} a las: ${vuelo.hora_salida}`;
+            document.getElementById('origen').textContent = `Origen: ${vuelo.origen}`;
+        }); 
+    }); 
+</script>
+</html>

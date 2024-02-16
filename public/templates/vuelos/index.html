@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=+, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Se importa la biblioteca Axios para hacer solicitudes HTTP -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Se importa la hoja de estilos de Bootstrap -->
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <!-- La llamada de node_modules de arriba es INCORRECTA. HAY QUE REVISAR -->
+    <!-- Se importa la hoja de estilos de Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <h1>Vuelos</h1>
+    <main class="flex-container">
+        <!-- Botón para crear un nuevo vuelo -->
+        <a href="/vuelos/create" class="btn btn-secondary">Crear</a>
+        <!-- Contenedor principal para la lista de vuelos -->
+        <div id="main" class="row"></div>
+    </main>
+</body>
+
+<script>
+    // Selecciona el elemento div principal donde se agregarán las tarjetas de vuelo
+    let main = document.getElementById('main');
+
+    // Realiza una solicitud para obtener todos los vuelos
+    fetch('/vuelos-all')
+    .then((response) => response.json())
+    .then((vuelos) => {
+        // Itera sobre cada vuelo obtenido
+        vuelos.forEach((vuelo) => {
+            // Crea un nuevo elemento div para la tarjeta de vuelo
+            let div1 = document.createElement('div');
+            div1.setAttribute('class', 'card');
+            div1.setAttribute('style', 'width: 18rem;');
+
+            // Crea un nuevo elemento div para el cuerpo de la tarjeta
+            let div2 = document.createElement('div');
+            div2.classList.add('card-body');
+
+            // Crea un elemento h5 para el título de la tarjeta (aerolínea)
+            let h5 = document.createElement('h5');
+            h5.classList.add('card-title');
+            h5.textContent = vuelo.aerolinea;
+            div2.appendChild(h5);
+
+            // Crea un elemento p para mostrar el número de vuelo
+            let p = document.createElement('p');
+            p.classList.add('card-text');
+            p.textContent = `NÚMERO DE VUELO: ${vuelo.numero_vuelo}`;
+            div2.appendChild(p);
+
+            // Crea un elemento p para mostrar el destino del vuelo
+            let c = document.createElement('p');
+            c.classList.add('card-text');
+            c.textContent = `DESTINO: ${vuelo.destino}`;
+            div2.appendChild(c);
+
+            // Crea un enlace para ver detalles del vuelo
+            let a = document.createElement('a');
+            a.classList.add('btn');
+            a.classList.add('btn-primary');
+            a.textContent = 'Ver detalles';
+            a.setAttribute('href', `/vuelos/show/${vuelo.id}`);
+            div2.appendChild(a);
+
+            // Crea un enlace para editar el vuelo
+            let a2 = document.createElement('a');
+            a2.classList.add('btn');
+            a2.classList.add('btn-warning');
+            a2.textContent = 'Editar';
+            a2.setAttribute('href', `/vuelos/edit/${vuelo.id}`);
+            div2.appendChild(a2);
+            
+            // Crea un botón para eliminar el vuelo
+            let a3 = document.createElement('button');
+            a3.classList.add('btn');
+            a3.classList.add('btn-danger');
+            a3.textContent = 'Eliminar';
+            // Agrega un evento de clic al botón para enviar una solicitud de eliminación
+            a3.addEventListener("click", (event) => {
+                event.preventDefault();
+                fetch(`/vuelos-eliminar/${vuelo.id}`, {
+                    method: "DELETE"
+                });
+                // Recarga la página después de eliminar el vuelo
+                location.reload();
+            });
+            div2.appendChild(a3);
+
+            // Agrega el cuerpo de la tarjeta al div principal
+            div1.appendChild(div2);
+
+            // Agrega la tarjeta al contenedor principal de vuelos
+            main.appendChild(div1);
+        });
+    });
+</script>
+</html>
